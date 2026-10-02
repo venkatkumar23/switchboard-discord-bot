@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "switchboard",
+  "main": "src/worker/index.ts",
+  // Pinned to the newest date the test pool's workerd supports, so tests and prod match.
+  "compatibility_date": "2026-08-15",
+  "assets": {
+    // The React dashboard. Unknown paths fall back to index.html (client-side routing)...
+    "not_found_handling": "single-page-application",
+    // ...except these, which must always reach the Worker (navigations included).
+    "run_worker_first": ["/api/*", "/oauth/*", "/interactions"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "switchboard",
+      // Replace with the id printed by `npx wrangler d1 create switchboard` (see README).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Re-drives the durable job outbox (retries with backoff) and housekeeping.
+  "triggers": { "crons": ["* * * * *"] },
+  "observability": { "enabled": true },
+  "vars": {
+    "DISCORD_API_BASE": "https://discord.com/api/v10",
+    "AI_BASE_URL": "https://api.groq.com/openai/v1",
+    "AI_MODEL": "openai/gpt-oss-20b"
+  }
+  // Secrets (never in this file): DISCORD_APPLICATION_ID, DISCORD_PUBLIC_KEY, DISCORD_BOT_TOKEN,
+  // DISCORD_CLIENT_SECRET, AI_API_KEY, ENCRYPTION_KEY. Locally they come from .env.
+}

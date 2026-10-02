@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+coverage/
+*.log
+.DS_Store
+
+# Secrets: only the example file is committed.
+.env
+.env.*
+!.env.example
+.dev.vars*
