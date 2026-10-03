@@ -25,3 +25,18 @@ Kept while building (see CLAUDE.md → "Working style"). Raw material for AI_NOT
   interaction handler now takes a minimal `{ waitUntil }` interface, which also simplifies tests.
 - **My own test bug:** asserted `posted_message_id` was still null on a row read *after*
   awaiting the whole waitUntil pipeline. The app was right; the test was wrong.
+- **A verification step that lied.** An automated edit (a Python string slice) split
+  `DEFAULT_RULES` in the middle of its type annotation — the slice ended at the first `];`, which
+  was inside `string[];`. The follow-up check printed `ALL TYPECHECKS PASS` anyway, because it was
+  written as `tsc … | head && echo PASS`: a pipeline's exit status is the *last* command's
+  (`head`), so tsc's failure was swallowed. Caught only because the tsc errors were printed right
+  above the "PASS" line. Fixed the file by hand and ran every later check with `set -o pipefail`.
+- **Live feed stuck on "Loading activity…" (found by looking, not by tests).** The feed skipped
+  polls while `document.visibilityState !== "visible"` — including the very first load, so a tab
+  opened in the background never loaded. Unit/integration tests can't see this; the visual check
+  in Chrome did. The first load is now unconditional; later polls still pause in hidden tabs.
+- **"Deliverys" / "Securitys".** Filter labels were built by appending "s". Replaced with an
+  explicit label map. Small, but exactly the kind of thing a reviewer notices first.
+- **Overdue retries rendered as "next 2m ago"** when no cron was running (local dev). Now "due now".
+- **Cron doesn't fire under `vite dev`.** Added `npm run demo:cron`, which calls the plugin's
+  `/cdn-cgi/handler/scheduled` endpoint every minute so retries happen in the offline demo.

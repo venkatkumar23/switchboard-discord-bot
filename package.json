@@ -23,7 +23,9 @@
     "demo:mock": "tsx scripts/mock-discord.ts",
     "demo:admin": "tsx scripts/create-admin.ts --email admin@demo.local --password demo-password --guild 200000000000000001",
     "simulate": "tsx scripts/simulate.ts",
-    "demo:cron": "node -e \"setInterval(()=>fetch('http://localhost:5173/cdn-cgi/handler/scheduled').then(r=>console.log(new Date().toISOString(),'cron tick',r.status)).catch(e=>console.error(e.message)),60000);console.log('Ticking the local cron every 60s (Ctrl+C to stop)')\""
+    "demo:cron": "node -e \"setInterval(()=>fetch('http://localhost:5173/cdn-cgi/handler/scheduled').then(r=>console.log(new Date().toISOString(),'cron tick',r.status)).catch(e=>console.error(e.message)),60000);console.log('Ticking the local cron every 60s (Ctrl+C to stop)')\"",
+    "secrets:push": "tsx scripts/push-secrets.ts",
+    "discord:configure": "tsx scripts/configure-discord.ts"
   },
   "dependencies": {
     "hono": "^4.13.12",
