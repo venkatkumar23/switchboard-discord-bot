@@ -28,6 +28,7 @@ import {
   eventStatement,
   getGuild,
   parseFaults,
+  refreshGuildInfo,
   rulesStatement,
   toCommandSettings,
   toRule,
@@ -71,7 +72,12 @@ async function loadGuild(c: AppContext): Promise<GuildRow> {
 
 // ── Server settings ──────────────────────────────────────────────────
 guildApi.get("/", async (c) => {
-  return c.json(toGuildSettings(await loadGuild(c), aiConfigured(c.env), Date.now()));
+  let guild = await loadGuild(c);
+  if (!guild.name) {
+    await refreshGuildInfo(c.env, guild.id);
+    guild = await loadGuild(c);
+  }
+  return c.json(toGuildSettings(guild, aiConfigured(c.env), Date.now()));
 });
 
 const SettingsSchema = z

@@ -8,9 +8,12 @@ import {
   type EventLevel,
   type FaultName,
   type Faults,
-  type Priority,
 } from "../../shared/types";
-import { redact, redactString } from "../lib/log";
+import { DEFAULT_RULES } from "../defaults";
+import { discord } from "../discord/api";
+import type { Env } from "../env";
+import { errorMessage } from "../lib/errors";
+import { log, redact, redactString } from "../lib/log";
 import type { CommandConfigRow, GuildRow, ReportRow, RuleRow } from "./rows";
 import { parseJson } from "./rows";
 
@@ -58,6 +61,18 @@ export function getGuild(db: D1Database, guildId: string): Promise<GuildRow | nu
   return db.prepare("SELECT * FROM guilds WHERE id = ?").bind(guildId).first<GuildRow>();
 }
 
+/** Interaction payloads don't carry the server name; fetch it once with the bot token. */
+export async function refreshGuildInfo(env: Env, guildId: string): Promise<void> {
+  try {
+    const g = await discord(env).getGuild(guildId);
+    await env.DB.prepare("UPDATE guilds SET name = ?, icon = ?, updated_at = ? WHERE id = ?")
+      .bind(g.name, g.icon, Date.now(), guildId)
+      .run();
+  } catch (err) {
+    log.warn("guild.refresh_failed", { guildId, error: errorMessage(err) });
+  }
+}
+
 export function parseFaults(raw: string | null | undefined): Faults {
   return parseJson<Faults>(raw, {});
 }
@@ -66,27 +81,6 @@ export function isFaultActive(faults: Faults, name: FaultName, now: number): boo
   const until = faults[name];
   return typeof until === "number" && until > now;
 }
-
-export const DEFAULT_RULES: { name: string; keywords: string[]; priority: Priority; mentionRole: boolean }[] = [
-  {
-    name: "Security incident",
-    keywords: ["hacked", "hack", "phishing", "scam", "compromised", "token leak", "raid", "malware", "doxxed"],
-    priority: "critical",
-    mentionRole: true,
-  },
-  {
-    name: "Outage",
-    keywords: ["down", "outage", "not working", "broken", "crash", "crashed", "500", "can't log in", "cannot log in"],
-    priority: "high",
-    mentionRole: true,
-  },
-  {
-    name: "Minor",
-    keywords: ["typo", "cosmetic", "suggestion", "feature request", "nitpick"],
-    priority: "low",
-    mentionRole: false,
-  },
-];
 
 /** Seeds a sensible starting rule set for a newly seen server. */
 export function defaultRuleStatements(db: D1Database, guildId: string, now: number): D1PreparedStatement[] {

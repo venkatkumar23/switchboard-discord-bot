@@ -107,6 +107,8 @@ export class FakeNet {
       const post = /\/channels\/(\d+)\/messages$/.exec(call.path);
       if (post && call.method === "POST") return json({ id: String(this.nextMessageId++), channel_id: post[1] });
       if (/\/channels\/\d+\/messages\/\d+$/.test(call.path)) return json({ id: "1" });
+      const guild = /\/guilds\/(\d+)$/.exec(call.path);
+      if (guild) return json({ id: guild[1], name: "Name From Discord", icon: "abc123" });
       if (/\/guilds\/\d+\/channels$/.test(call.path)) return json(this.channels);
       if (/\/guilds\/\d+\/roles$/.test(call.path)) return json(this.roles);
       if (call.path.endsWith("/oauth2/token")) {

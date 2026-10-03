@@ -4,7 +4,7 @@ import type { Env } from "../env";
 import { PermanentError, RetryableError, asRetryable } from "../lib/errors";
 import type { MessagePayload } from "./types";
 
-const USER_AGENT = "DiscordBot (https://github.com/venkatkumar23/switchboard, 1.0)";
+const USER_AGENT = "DiscordBot (https://github.com/venkatkumar23/switchboard-discord-bot, 1.0)";
 const SNOWFLAKE = /^\d{17,20}$/;
 
 export class DiscordApiError extends PermanentError {
@@ -117,6 +117,9 @@ export function discord(env: Env) {
         `/webhooks/${snowflake(env.DISCORD_APPLICATION_ID)}/${encodeURIComponent(interactionToken)}/messages/@original`,
         { body: payload },
       ),
+
+    getGuild: (guildId: string) =>
+      call<{ id: string; name: string; icon: string | null }>(env, "GET", `/guilds/${snowflake(guildId)}`, { auth: "bot" }),
 
     getGuildChannels: (guildId: string) =>
       call<RawChannel[]>(env, "GET", `/guilds/${snowflake(guildId)}/channels`, { auth: "bot" }),

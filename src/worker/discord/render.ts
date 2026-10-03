@@ -93,10 +93,13 @@ export function reportButtons(r: ReportRow): unknown[] {
   return [{ type: ComponentType.ACTION_ROW, components: buttons }];
 }
 
-/** The report as posted to the moderators' channel, with Acknowledge/Resolve buttons. */
+/**
+ * The report as posted to the moderators' channel, with Acknowledge/Resolve buttons. The alert
+ * line is only shown while the report is open (edits never re-ping, so dropping it is safe).
+ */
 export function renderReportMessage(r: ReportRow, alertRoleId: string | null): MessagePayload {
   const style = r.priority ? PRIORITY_STYLE[r.priority] : null;
-  const pingRole = alertRoleId && r.mention_role === 1 ? alertRoleId : null;
+  const pingRole = alertRoleId && r.mention_role === 1 && r.status === "open" ? alertRoleId : null;
   return {
     content: pingRole ? `<@&${pingRole}> ${style?.emoji ?? ""} new **${style?.label ?? ""}** priority report` : "",
     embeds: [

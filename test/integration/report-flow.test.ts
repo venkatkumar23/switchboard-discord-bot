@@ -161,6 +161,8 @@ describe("/report", () => {
     expect(net.to(/@original$/)).toHaveLength(1);
     expect(net.to("/channels/")).toHaveLength(0);
     expect(await eventNames(report.id)).toEqual(expect.arrayContaining(["post.skipped", "mirror.skipped"]));
+    // the server's name isn't in interaction payloads, so it is fetched once with the bot token
+    expect(await rows("SELECT name, icon FROM guilds WHERE id = '200000000000000077'")).toEqual([{ name: "Name From Discord", icon: "abc123" }]);
   });
 
   it("escalates to critical and pings when the AI says so, even without a keyword match", async () => {

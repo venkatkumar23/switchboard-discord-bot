@@ -45,6 +45,12 @@ describe("renderReportMessage", () => {
     expect(msg.content).toContain("<@&400000000000000001>");
   });
 
+  it("drops the alert line once the report is no longer open (edits never re-ping)", () => {
+    const msg = renderReportMessage(report({ status: "acknowledged", acked_by: "Mia", acked_at: 1 }), "400000000000000001");
+    expect(msg.content).toBe("");
+    expect(msg.allowed_mentions).toEqual({ parse: [] });
+  });
+
   it("pings nobody when the rule doesn't ask for it", () => {
     const msg = renderReportMessage(report({ mention_role: 0 }), "400000000000000001");
     expect(msg.allowed_mentions).toEqual({ parse: [] });

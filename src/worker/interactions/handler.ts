@@ -6,6 +6,7 @@ import {
   ensureGuildStatement,
   eventStatement,
   recordSecurity,
+  refreshGuildInfo,
   toCommandSettings,
 } from "../db/queries";
 import type { CommandConfigRow, GuildRow } from "../db/rows";
@@ -159,6 +160,7 @@ export async function handleInteraction(
     await db.batch(defaultRuleStatements(db, guildId, now)).catch((err) => {
       log.warn("guild.seed_rules_failed", { guildId, error: errorMessage(err) });
     });
+    exec.waitUntil(refreshGuildInfo(env, guildId));
   }
 
   const ctx: InteractionContext = {
