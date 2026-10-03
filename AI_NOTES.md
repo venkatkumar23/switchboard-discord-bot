@@ -13,7 +13,10 @@
 - **Me:** the accounts and secrets (Discord application and test server, Cloudflare, Groq), the
   publishing decisions (public repo, deployment), reviewing the result, and testing the live bot
   in Discord. Secrets never went through the chat: the agent wrote scripts that validate and
-  upload them without printing them.
+  upload them without printing them. That habit of checking state before acting paid off once:
+  I pasted the production keys into `.env.example` (the committed template) instead of
+  `.env.production`. The agent noticed before anything was committed, moved them, and restored
+  the template.
 
 ## Key decisions
 

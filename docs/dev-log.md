@@ -49,3 +49,18 @@ Kept while building (see CLAUDE.md → "Working style"). Raw material for AI_NOT
   141 (SIGPIPE), which skipped `git grep` and fell through to the `||`. Re-ran the scan on its own
   (exit 1 = no matches). Rule adopted: verification commands run standalone, and their raw exit
   code is reported — no `&& … || echo OK` chains.
+
+## Deployment (same day)
+
+- **`wrangler login` has a 120-second window** for the OAuth "Allow" click; two attempts timed out
+  while the browser wasn't signed in to Cloudflare. Fix: sign in first, then start the login
+  (`--browser=false` + open the URL in the already-signed-in browser).
+- **Keys pasted into the wrong file.** The production keys landed in `.env.example` (committed)
+  instead of `.env.production` (git-ignored). Caught by checking `git status` / key presence
+  before uploading; moved them programmatically (never printed) and `git checkout` restored the
+  template before any commit.
+- **Discord validated the endpoint on the first try** (signed PING + bad-signature probes), set via
+  `PATCH /applications/@me` — no portal clicking.
+- **Production verification:** `/report` via text and via the form, buttons, mirror and AI all
+  worked live; a simulated mirror outage failed attempt 1 and the 1-minute cron delivered it on
+  attempt 2 about 40 s later.

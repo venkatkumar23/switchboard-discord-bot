@@ -54,8 +54,14 @@ request counters · a **fault-injection lab** to watch the unhappy paths live.
 
 ## Try it (reviewers)
 
-1. Join the test server (invite in the submission form) or add the bot to your own server from
-   the dashboard (**＋ Connect another server**).
+> Verified end to end on the live URL (3 Oct 2026): `/report` with text and through the form,
+> deferred reply, channel post with buttons + role ping, Discord-webhook mirror, AI triage, and a
+> cron-driven retry after a simulated mirror outage.
+
+1. Join the test server, or sign in to the dashboard. The invite link and the throwaway admin
+   login are in the submission form. On the test server anyone may press the report buttons
+   (Settings → *Only moderators can press report buttons* is off; switch it on to see the
+   permission check). To try your own server instead, use **＋ Connect another server**.
 2. In Discord:
    - `/report text:the verification bot is down` → private "thinking…", then a confirmation; the
      report appears in `#mod-reports` with buttons (pinging `@Moderators`) and in `#mirror`.
