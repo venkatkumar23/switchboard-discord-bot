@@ -40,3 +40,12 @@ Kept while building (see CLAUDE.md → "Working style"). Raw material for AI_NOT
 - **Overdue retries rendered as "next 2m ago"** when no cron was running (local dev). Now "due now".
 - **Cron doesn't fire under `vite dev`.** Added `npm run demo:cron`, which calls the plugin's
   `/cdn-cgi/handler/scheduled` endpoint every minute so retries happen in the offline demo.
+- **GitHub push protection blocked the first push** — correctly. The log-redaction unit test
+  contained a *fake* Discord-bot-token-shaped string, and GitHub flagged it as a "Discord Bot
+  Token". Fix: assemble fake credentials at runtime in the test, and fold that fix into the
+  (not yet pushed) commit that introduced the string, so no reachable commit contains it.
+- **The same false-pass trap, twice.** A chained command `tests | grep … && git grep … || echo
+  "scan clean"` printed "scan clean" without scanning: under `pipefail` the first pipeline exited
+  141 (SIGPIPE), which skipped `git grep` and fell through to the `||`. Re-ran the scan on its own
+  (exit 1 = no matches). Rule adopted: verification commands run standalone, and their raw exit
+  code is reported — no `&& … || echo OK` chains.
