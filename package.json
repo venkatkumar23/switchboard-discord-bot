@@ -10,7 +10,6 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "npm run build && vite preview",
     "deploy": "npm run build && wrangler deploy",
     "typecheck": "tsc -p tsconfig.worker.json --noEmit && tsc -p tsconfig.web.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "test": "vitest run",
@@ -19,7 +18,12 @@
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
     "register": "tsx scripts/register-commands.ts",
     "admin:create": "tsx scripts/create-admin.ts",
-    "smoke": "tsx scripts/smoke.ts"
+    "smoke": "tsx scripts/smoke.ts",
+    "demo:setup": "tsx scripts/dev-setup.ts",
+    "demo:mock": "tsx scripts/mock-discord.ts",
+    "demo:admin": "tsx scripts/create-admin.ts --email admin@demo.local --password demo-password --guild 200000000000000001",
+    "simulate": "tsx scripts/simulate.ts",
+    "demo:cron": "node -e \"setInterval(()=>fetch('http://localhost:5173/cdn-cgi/handler/scheduled').then(r=>console.log(new Date().toISOString(),'cron tick',r.status)).catch(e=>console.error(e.message)),60000);console.log('Ticking the local cron every 60s (Ctrl+C to stop)')\""
   },
   "dependencies": {
     "hono": "^4.13.12",
