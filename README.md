@@ -6,7 +6,7 @@ Discord, **posted** to the moderators' channel with **Acknowledge / Resolve** bu
 **mirrored** to a second channel (Slack or another Discord channel). Admins sign in to a
 dashboard that shows a **live log** of every command and action and lets them configure it all.
 
-- **Live app:** https://switchboard.YOUR-SUBDOMAIN.workers.dev  _(dashboard login is in the submission form)_
+- **Live app:** https://switchboard.venkatkumarmeda23.workers.dev  _(dashboard login is in the submission form)_
 - **Stack:** one Cloudflare Worker (Hono + React SPA) · Cloudflare D1 (SQLite) · Groq (OpenAI-compatible) · all free, no card
 - **Tests:** 111 unit + integration tests that run inside the real Workers runtime with a real D1
 
@@ -65,7 +65,7 @@ request counters · a **fault-injection lab** to watch the unhappy paths live.
 3. Dashboard → **Reliability** → turn on **Mirror webhook outage**, file another report, and watch
    the mirror job fail and retry with backoff; switch it off and it delivers on the next cron tick.
    **AI provider outage** shows the rules fallback; **Slow AI (+6 s)** shows deferral.
-4. Throw junk at it: `npm run smoke -- https://switchboard.YOUR-SUBDOMAIN.workers.dev` (or any
+4. Throw junk at it: `npm run smoke -- https://switchboard.venkatkumarmeda23.workers.dev` (or any
    `curl -X POST …/interactions`) → every bad request is a `401` and shows up under
    *Rejected requests*.
 
@@ -137,14 +137,14 @@ npx wrangler d1 create switchboard --location enam   # near Discord's US region;
 npm run db:migrate:remote
 npm run deploy                                         # vite build + wrangler deploy
 npm run secrets:push                                   # validates .env.production, uploads via `wrangler secret bulk`
-npm run discord:configure -- https://switchboard.YOUR-SUBDOMAIN.workers.dev   # sets Interactions Endpoint URL
+npm run discord:configure -- https://switchboard.venkatkumarmeda23.workers.dev   # sets Interactions Endpoint URL
 npm run register                                       # global slash commands
 npm run admin:create -- --remote --email <you> --guild <server id>
-npm run smoke -- https://switchboard.YOUR-SUBDOMAIN.workers.dev
+npm run smoke -- https://switchboard.venkatkumarmeda23.workers.dev
 ```
 
 Then in the Developer Portal → OAuth2 → Redirects add
-`https://switchboard.YOUR-SUBDOMAIN.workers.dev/oauth/discord/callback`. Logs: Workers
+`https://switchboard.venkatkumarmeda23.workers.dev/oauth/discord/callback`. Logs: Workers
 Observability (structured JSON, secrets redacted).
 
 ## Tests
